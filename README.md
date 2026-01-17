@@ -1,4 +1,4 @@
-# LibreScale 🏋️
+# ⚖️ LibreScale
 
 A minimal, self-hosted weight tracking application built with PHP and SQLite. Perfect for data-driven individuals who want full control over their fitness data.
 
