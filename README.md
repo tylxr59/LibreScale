@@ -2,6 +2,24 @@
 
 A minimal, self-hosted weight tracking application built with PHP and SQLite. Perfect for data-driven individuals who want full control over their fitness data.
 
+## Screenshots
+<p>
+  <a href="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-1.png">
+    <img src="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-1.png" width="200" />
+  </a>
+  <a href="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-2.png">
+    <img src="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-2.png" width="200" />
+  </a>
+  <a href="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-3.png">
+    <img src="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-3.png" width="200" />
+  </a>
+</p>
+<p>
+  <a href="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-settings.png">
+    <img src="https://github.com/tylxr59/LibreScale/raw/main/screenshots/LibreScale-screenshot-settings.png" width="200" />
+  </a>
+</p>
+
 ## Features
 
 - **Interactive Charts** - Visualize your weight progress over time (weekly, monthly, yearly, all-time)
