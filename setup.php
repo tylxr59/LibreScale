@@ -36,6 +36,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($errors)) {
         try {
+            // Create sessions directory for persistent sessions
+            $session_path = __DIR__ . '/sessions';
+            if (!is_dir($session_path)) {
+                if (!mkdir($session_path, 0700, true)) {
+                    $errors[] = 'Failed to create sessions directory';
+                }
+            }
+            
+            // Create .htaccess in sessions directory to block web access
+            $htaccess_path = $session_path . '/.htaccess';
+            if (!file_exists($htaccess_path)) {
+                file_put_contents($htaccess_path, "# Deny all web access to session files\nRequire all denied\n");
+            }
+            
             // Create database
             $db = new PDO('sqlite:' . $db_path);
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

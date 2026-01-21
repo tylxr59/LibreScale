@@ -67,6 +67,7 @@ function handleLogin() {
                 // Regenerate session ID to prevent session fixation
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['last_activity'] = time();
                 header('Location: index.php');
                 exit;
             } else {

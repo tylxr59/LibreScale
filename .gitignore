@@ -3,6 +3,10 @@
 # Database files (user data)
 librescale.db
 
+# Session files
+sessions/*
+!sessions/.htaccess
+
 # PHP
 *.log
 

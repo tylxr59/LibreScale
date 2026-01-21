@@ -3,10 +3,23 @@
  * LibreScale Configuration and Database Helper
  */
 
-// Configure persistent session (30 days)
+// Configure persistent session (1 year - effectively never expire)
 if (session_status() === PHP_SESSION_NONE) {
-    // Set session cookie to last 30 days
-    $cookie_lifetime = 30 * 24 * 60 * 60; // 30 days in seconds
+    // Set session cookie to last 1 year
+    $cookie_lifetime = 365 * 24 * 60 * 60; // 1 year in seconds
+    
+    // Use custom session save path to prevent system cleanup
+    $session_path = __DIR__ . '/sessions';
+    if (!is_dir($session_path)) {
+        mkdir($session_path, 0700, true);
+    }
+    session_save_path($session_path);
+    
+    // Configure garbage collection to be very rare
+    ini_set('session.gc_probability', 1);
+    ini_set('session.gc_divisor', 10000); // 0.01% chance per request
+    ini_set('session.gc_maxlifetime', $cookie_lifetime);
+    
     session_set_cookie_params([
         'lifetime' => $cookie_lifetime,
         'path' => '/',
@@ -16,10 +29,10 @@ if (session_status() === PHP_SESSION_NONE) {
         'samesite' => 'Lax'
     ]);
     
-    // Set session garbage collection to 30 days
-    ini_set('session.gc_maxlifetime', $cookie_lifetime);
-    
     session_start();
+    
+    // Update last activity timestamp on each request
+    $_SESSION['last_activity'] = time();
 }
 
 // Define database path

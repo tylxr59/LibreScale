@@ -66,6 +66,8 @@ All AJAX requests use `index.php?action=<action_name>`:
 
 **setup.php** (Run once)
 - Creates SQLite database with fixed name: `librescale.db`
+- Creates `/sessions` directory with 0700 permissions for session storage
+- Creates `.htaccess` in sessions directory to block web access
 - Creates initial user account
 - Self-checks: Won't run if `librescale.db` exists
 - Database protected by `.htaccess` file blocking direct access
@@ -80,7 +82,11 @@ All AJAX requests use `index.php?action=<action_name>`:
 - Includes page components based on routing
 
 **config.php** (Database & utilities)
-- Session management (starts session)
+- Session management (starts session with custom save path and extended lifetime)
+  - Sessions stored in `/sessions` directory (isolated from system cleanup)
+  - Cookie lifetime: 1 year (effectively never expire)
+  - Garbage collection: 0.01% chance per request (very rare)
+  - Activity tracking: Updates `last_activity` timestamp on each request
 - Defines database path constant: `DB_PATH`
 - Database connection: `getDB()` returns PDO instance
 - Authentication helpers: `requireLogin()`, `getCurrentUser()`
@@ -177,6 +183,7 @@ All AJAX requests use `index.php?action=<action_name>`:
 
 **.gitignore** (Version control)
 - Excludes database file (`librescale.db`)
+- Excludes session files (`sessions/*`) but keeps `.htaccess`
 - Excludes OS and editor files
 
 ## Database Schema
@@ -361,6 +368,8 @@ FOREIGN KEY (user_id) REFERENCES users(id)
 
 **Authentication:**
 - Sessions managed by PHP (`session_start()` in config.php)
+- Sessions persist for 1 year until manual logout (no automatic timeout)
+- Session files stored in isolated `/sessions` directory
 - `requireLogin()` must be called on all protected pages
 - Password hashing: Use `password_hash()` and `password_verify()` only
 
@@ -481,8 +490,10 @@ When making changes, verify:
 **Authentication Issues:**
 - Check if session is started (`session_status() === PHP_SESSION_ACTIVE`)
 - Verify `$_SESSION['user_id']` is set after login
+- Check if `/sessions` directory exists with 0700 permissions
+- Verify session files are being created in `/sessions` directory
 - Clear browser cookies and try again
-- Check session settings in `php.ini`
+- Check session settings in `php.ini` (though app uses custom settings)
 
 **Timezone Issues:**
 - Verify timezone string is valid PHP timezone identifier

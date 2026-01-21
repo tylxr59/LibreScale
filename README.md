@@ -122,7 +122,9 @@ LibreScale/
 ├── icon-192.png       # PWA icon (192x192)
 ├── icon-512.png       # PWA icon (512x512)
 ├── .htaccess          # Apache security configuration
-└── librescale.db      # SQLite database (auto-generated)
+├── librescale.db      # SQLite database (auto-generated)
+└── sessions/          # Session storage directory (auto-generated)
+    └── .htaccess      # Blocks web access to sessions
 ```
 
 ## Database Schema
@@ -141,9 +143,10 @@ LibreScale/
 
 ## Security
 
-- Passwords are hashed using PHP's `password_hash()` 
+- Passwords are hashed using PHP's `password_hash()`
 - `.htaccess` protects database files from direct access
-- Session-based authentication
+- Session-based authentication with persistent sessions (1 year lifetime)
+- Sessions stored in isolated `/sessions` directory
 - SQL injection prevention via prepared statements
 - XSS prevention via output escaping
 
