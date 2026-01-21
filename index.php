@@ -4,6 +4,9 @@
  */
 require_once __DIR__ . '/config.php';
 
+// Prevent caching of dynamic content
+setNoCacheHeaders();
+
 // Handle AJAX requests
 if (isset($_GET['action'])) {
     handleAjaxRequest();
@@ -61,6 +64,8 @@ function handleLogin() {
             $user = $stmt->fetch();
             
             if ($user && password_verify($password, $user['password'])) {
+                // Regenerate session ID to prevent session fixation
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 header('Location: index.php');
                 exit;
@@ -88,7 +93,7 @@ function handleLogin() {
     <body class="login-page">
         <div class="login-container">
             <div class="login-card">
-                <h1><span class="material-symbols-outlined" style="font-size: 32px; vertical-align: middle;">fitness_center</span> LibreScale</h1>
+                <h1><span class="material-symbols-outlined" style="font-size: 32px; vertical-align: middle;">balance</span> LibreScale</h1>
                 <p class="subtitle">Your personal weight tracker</p>
                 
                 <?php if ($error): ?>

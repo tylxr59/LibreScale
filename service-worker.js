@@ -1,8 +1,7 @@
 // LibreScale Service Worker
-const CACHE_NAME = 'librescale-v1';
+const CACHE_NAME = 'librescale-v2';
 const urlsToCache = [
-  './',
-  './index.php',
+
   './styles.css',
   './app.js',
   './MaterialSymbolsOutlined.woff2',
@@ -17,24 +16,36 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch event - serve from cache when offline
+// Fetch event - network-first for HTML, cache-first for assets
 self.addEventListener('fetch', event => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Return cached version or fetch new
-        return response || fetch(event.request);
-      })
-      .catch(() => {
-        // Return offline page if available
-        return caches.match('./index.php');
-      })
-  );
+  const requestURL = new URL(event.request.url);
+  const isHTMLRequest = event.request.headers.get('accept')?.includes('text/html') || 
+                        requestURL.pathname.endsWith('.php') ||
+                        requestURL.pathname.endsWith('/');
+
+  if (isHTMLRequest) {
+    // Network-first strategy for HTML pages
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => {
+          // Fallback to cache if offline
+          return caches.match(event.request);
+        })
+    );
+  } else {
+    // Cache-first strategy for static assets
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          return response || fetch(event.request);
+        })
+    );
+  }
 });
 
 // Activate event - clean up old caches

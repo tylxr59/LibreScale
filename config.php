@@ -3,8 +3,22 @@
  * LibreScale Configuration and Database Helper
  */
 
-// Start session
+// Configure persistent session (30 days)
 if (session_status() === PHP_SESSION_NONE) {
+    // Set session cookie to last 30 days
+    $cookie_lifetime = 30 * 24 * 60 * 60; // 30 days in seconds
+    session_set_cookie_params([
+        'lifetime' => $cookie_lifetime,
+        'path' => '/',
+        'domain' => '',
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    
+    // Set session garbage collection to 30 days
+    ini_set('session.gc_maxlifetime', $cookie_lifetime);
+    
     session_start();
 }
 
@@ -197,4 +211,13 @@ function jsonResponse($data, $status = 200) {
     header('Content-Type: application/json');
     echo json_encode($data);
     exit;
+}
+
+/**
+ * Set cache-control headers for dynamic content
+ */
+function setNoCacheHeaders() {
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    header('Pragma: no-cache');
+    header('Expires: 0');
 }
